@@ -6,3 +6,123 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ── Enums ──────────────────────────────────────────────
+
+enum Bias {
+  BULLISH
+  BEARISH
+  NEUTRAL
+}
+
+enum DayType {
+  TREND_UP
+  TREND_DOWN
+  RANGE
+  GRIND
+}
+
+enum MacroIndicatorType {
+  TREASURY_10Y
+  VIX
+  DXY
+  OIL
+  CREDIT_SPREADS
+}
+
+enum SignalType {
+  VWAP_INTERACTION
+  LIQUIDITY_SWEEP
+  VOLUME_EXPANSION
+  BREAK_OF_STRUCTURE
+  ORB
+}
+
+enum TradeDirection {
+  LONG
+  SHORT
+}
+
+// ── Models ─────────────────────────────────────────────
+
+model DailySession {
+  id              String    @id @default(cuid())
+  date            DateTime  @unique @db.Date
+  riskScore       Int?
+  dailyBias       Bias?
+  confidenceLevel String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  macroIndicators    MacroIndicator[]
+  overnightStructure OvernightStructure?
+  intradaySignals    IntradaySignal[]
+  trades             Trade[]
+  postTradeReview    PostTradeReview?
+}
+
+model MacroIndicator {
+  id            String             @id @default(cuid())
+  sessionId     String
+  indicator     MacroIndicatorType
+  value         Float
+  previousValue Float
+  isRiskOff     Boolean
+  timestamp     DateTime           @default(now())
+
+  session DailySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, indicator])
+}
+
+model OvernightStructure {
+  id               String  @id @default(cuid())
+  sessionId        String  @unique
+  esTrend          String
+  nqTrend          String
+  preMarketVwap    Float?
+  overnightHigh    Float?
+  overnightLow     Float?
+  keyLevels        Json?
+  majorNews        String?
+  scheduledReports String?
+
+  session DailySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model IntradaySignal {
+  id          String     @id @default(cuid())
+  sessionId   String
+  signalType  SignalType
+  description String?
+  timestamp   DateTime   @default(now())
+
+  session DailySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model Trade {
+  id                 String         @id @default(cuid())
+  sessionId          String
+  direction          TradeDirection
+  entryPrice         Float
+  exitPrice          Float?
+  stopPrice          Float
+  isAlignedWithBias  Boolean
+  qualificationScore Int
+  notes              String?
+  timestamp          DateTime       @default(now())
+
+  session DailySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model PostTradeReview {
+  id                 String  @id @default(cuid())
+  sessionId          String  @unique
+  dayType            DayType
+  macroAligned       Boolean
+  tradesFollowedBias Boolean
+  effectiveSignals   String?
+  mistakes           String?
+
+  session DailySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
