@@ -7,6 +7,9 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<title>QQQ Market Context Dashboard</title>
 </svelte:head>
 
-{@render children()}
+<div class="min-h-screen bg-base-100 text-base-content">
+	{@render children()}
+</div>
