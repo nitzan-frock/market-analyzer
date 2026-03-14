@@ -7,7 +7,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>QQQ Market Context Dashboard</title>
+	<title>Trading Context Dashboard</title>
 </svelte:head>
 
 <div class="min-h-screen bg-base-100 text-base-content">
