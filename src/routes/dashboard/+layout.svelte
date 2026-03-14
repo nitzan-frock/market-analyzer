@@ -1,33 +1,46 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 
-	let { children } = $props();
+	let { children, data } = $props();
 
-	let selectedDate = $state(new Date().toISOString().split('T')[0]);
+	let selectedDate = $derived(data.selectedDate);
 
-	const navItems = [
+	type Route = '/dashboard' | '/dashboard/trades' | '/dashboard/review';
+
+	const navItems: { href: Route; label: string; icon: string }[] = [
 		{ href: '/dashboard', label: 'Dashboard', icon: '◫' },
 		{ href: '/dashboard/trades', label: 'Trades', icon: '⇄' },
 		{ href: '/dashboard/review', label: 'Review', icon: '✎' }
 	];
 
-	function isActive(href: string): boolean {
-		if (href === '/dashboard') return page.url.pathname === '/dashboard';
-		return page.url.pathname.startsWith(href);
+	function isActive(href: Route): boolean {
+		const resolved = resolve(href);
+		if (href === '/dashboard') return page.url.pathname === resolved;
+		return page.url.pathname.startsWith(resolved);
+	}
+
+	function onDateChange(e: Event) {
+		const target = e.target as HTMLInputElement;
+		selectedDate = target.value;
+		const url = new URL(page.url);
+		url.searchParams.set('date', selectedDate);
+		goto(resolve(`${url.pathname}?${url.searchParams}` as Route), { invalidateAll: true });
 	}
 </script>
 
 <div class="flex h-screen">
 	<aside class="w-56 shrink-0 border-r border-base-300 bg-base-200 flex flex-col">
 		<div class="p-4 border-b border-base-300">
-			<a href="/" class="text-lg font-bold tracking-tight">Trading Context</a>
+			<a href={resolve('/')} class="text-lg font-bold tracking-tight">Trading Context</a>
 		</div>
 
 		<nav class="flex-1 p-2">
 			<ul class="menu menu-sm gap-1">
-				{#each navItems as item}
+				{#each navItems as item (item.href)}
 					<li>
-						<a href={item.href} class={isActive(item.href) ? 'active' : ''}>
+						<a href={resolve(item.href)} class={isActive(item.href) ? 'active' : ''}>
 							<span class="text-base">{item.icon}</span>
 							{item.label}
 						</a>
@@ -44,7 +57,8 @@
 				id="session-date"
 				type="date"
 				class="input input-sm input-bordered w-full"
-				bind:value={selectedDate}
+				value={selectedDate}
+				onchange={onDateChange}
 			/>
 		</div>
 	</aside>

@@ -1,3 +1,7 @@
+<script lang="ts">
+	import { resolve } from '$app/paths';
+</script>
+
 <div class="hero min-h-screen bg-base-200">
 	<div class="hero-content text-center">
 		<div class="max-w-md">
@@ -5,7 +9,7 @@
 			<p class="py-6 text-base-content/70">
 				Probability-weighted trading context for discretionary traders.
 			</p>
-			<a href="/dashboard" class="btn btn-primary">Open Dashboard</a>
+			<a href={resolve('/dashboard')} class="btn btn-primary">Open Dashboard</a>
 		</div>
 	</div>
 </div>

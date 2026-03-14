@@ -4,7 +4,7 @@ import svelte from 'eslint-plugin-svelte';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 
-export default ts.config(
+export default [
 	js.configs.recommended,
 	...ts.configs.recommended,
 	...svelte.configs.recommended,
@@ -15,6 +15,15 @@ export default ts.config(
 			globals: {
 				...globals.browser,
 				...globals.node
+			}
+		},
+		settings: {
+			svelte: {
+				kit: {
+					files: {
+						routes: 'src/routes'
+					}
+				}
 			}
 		}
 	},
@@ -27,6 +36,22 @@ export default ts.config(
 		}
 	},
 	{
+		files: ['**/*.ts', '**/*.svelte'],
+		rules: {
+			'no-restricted-imports': [
+				'error',
+				{
+					patterns: [
+						{
+							group: ['*.js'],
+							message: 'Use extensionless imports — this is a TypeScript project.'
+						}
+					]
+				}
+			]
+		}
+	},
+	{
 		ignores: ['build/', '.svelte-kit/', 'dist/']
 	}
-);
+];
