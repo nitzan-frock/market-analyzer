@@ -20,7 +20,7 @@
 <div class="flex h-screen">
 	<aside class="w-56 shrink-0 border-r border-base-300 bg-base-200 flex flex-col">
 		<div class="p-4 border-b border-base-300">
-			<a href="/" class="text-lg font-bold tracking-tight">QQQ Dashboard</a>
+			<a href="/" class="text-lg font-bold tracking-tight">Trading Context</a>
 		</div>
 
 		<nav class="flex-1 p-2">

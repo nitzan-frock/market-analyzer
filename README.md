@@ -1,6 +1,6 @@
-# QQQ Market Context Dashboard
+# Trading Context Dashboard
 
-A probability-weighted trading context dashboard for discretionary QQQ and Nasdaq futures (NQ) traders. Aggregates macro indicators, overnight market structure, and intraday signals to produce a daily market bias and structured trade qualification workflow.
+A probability-weighted trading context dashboard for discretionary traders. Aggregates macro indicators, overnight market structure, and intraday signals to produce a daily market bias and structured trade qualification workflow.
 
 ## Tech Stack
 
