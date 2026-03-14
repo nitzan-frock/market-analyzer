@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 #
-# Creates all 11 feature tickets as GitHub Issues on the market-analyzer repo.
+# Creates GitHub Issues from every .md file in .github/issues/.
+#
+# Each markdown file is expected to have:
+#   - An H1 title on line 1 (e.g. "# Ticket 5: Some Feature")
+#   - An optional "## Labels" section followed by a line of
+#     backtick-wrapped, comma-separated labels (e.g. `feature`, `backend`)
+#
+# The H1 becomes the issue title and the full file becomes the body.
 #
 # Usage:
 #   GITHUB_TOKEN=ghp_xxx bash .github/create-issues.sh
 #
-# Requirements:
-#   - A GitHub personal access token with "repo" scope
-#   - curl
+# Requirements: curl, jq
 #
 set -euo pipefail
 
@@ -20,17 +25,46 @@ if [ -z "${GITHUB_TOKEN:-}" ]; then
   exit 1
 fi
 
-create_issue() {
-  local title="$1"
-  local body_file="$2"
-  local labels="$3"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ISSUES_DIR="${SCRIPT_DIR}/issues"
 
+if [ ! -d "$ISSUES_DIR" ]; then
+  echo "Error: Issues directory not found at ${ISSUES_DIR}"
+  exit 1
+fi
+
+extract_title() {
+  local file="$1"
+  head -1 "$file" | sed 's/^# //'
+}
+
+extract_labels() {
+  local file="$1"
+  local in_labels=false
+  while IFS= read -r line; do
+    if [[ "$line" == "## Labels" ]]; then
+      in_labels=true
+      continue
+    fi
+    if $in_labels && [[ -n "$line" ]]; then
+      echo "$line" | sed 's/`//g; s/, */,/g'
+      return
+    fi
+  done < "$file"
+}
+
+create_issue() {
+  local file="$1"
+  local title
+  title=$(extract_title "$file")
+  local labels_csv
+  labels_csv=$(extract_labels "$file")
   local body
-  body=$(cat "$body_file")
+  body=$(cat "$file")
 
   local labels_json="[]"
-  if [ -n "$labels" ]; then
-    labels_json=$(echo "$labels" | jq -R 'split(",")')
+  if [ -n "$labels_csv" ]; then
+    labels_json=$(echo "$labels_csv" | jq -R 'split(",")')
   fi
 
   local payload
@@ -57,72 +91,26 @@ create_issue() {
     issue_number=$(echo "$resp_body" | jq -r '.number')
     echo "  Created issue #${issue_number}: ${title}"
   else
-    echo "  FAILED to create issue: ${title} (HTTP ${http_code})"
+    echo "  FAILED: ${title} (HTTP ${http_code})"
     echo "$resp_body" | jq -r '.message // .' 2>/dev/null || echo "$resp_body"
     return 1
   fi
 }
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ISSUES_DIR="${SCRIPT_DIR}/issues"
+files=("$ISSUES_DIR"/*.md)
+
+if [ ${#files[@]} -eq 0 ]; then
+  echo "No .md files found in ${ISSUES_DIR}"
+  exit 0
+fi
 
 echo "Creating GitHub Issues for ${REPO}..."
+echo "Found ${#files[@]} issue file(s) in ${ISSUES_DIR}"
 echo ""
 
-create_issue \
-  "Project Foundation and Infrastructure Setup" \
-  "${ISSUES_DIR}/01-project-foundation.md" \
-  "setup,infrastructure"
-
-create_issue \
-  "Database Schema and Data Layer" \
-  "${ISSUES_DIR}/02-database-schema.md" \
-  "database,backend"
-
-create_issue \
-  "Dashboard Layout Shell" \
-  "${ISSUES_DIR}/03-dashboard-layout-shell.md" \
-  "frontend,ui"
-
-create_issue \
-  "Macro Context Module" \
-  "${ISSUES_DIR}/04-macro-context-module.md" \
-  "feature,backend,frontend"
-
-create_issue \
-  "Overnight Market Structure Module" \
-  "${ISSUES_DIR}/05-overnight-structure-module.md" \
-  "feature,backend,frontend"
-
-create_issue \
-  "Daily Bias Engine" \
-  "${ISSUES_DIR}/06-daily-bias-engine.md" \
-  "feature,backend,frontend,core-logic"
-
-create_issue \
-  "Execution Guidance Module" \
-  "${ISSUES_DIR}/07-execution-guidance-module.md" \
-  "feature,frontend"
-
-create_issue \
-  "Intraday Confirmation Signals" \
-  "${ISSUES_DIR}/08-intraday-confirmation-signals.md" \
-  "feature,backend,frontend"
-
-create_issue \
-  "Trade Qualification Module" \
-  "${ISSUES_DIR}/09-trade-qualification-module.md" \
-  "feature,frontend"
-
-create_issue \
-  "Risk Management Module" \
-  "${ISSUES_DIR}/10-risk-management-module.md" \
-  "feature,backend,frontend"
-
-create_issue \
-  "Post-Trade Review Module" \
-  "${ISSUES_DIR}/11-post-trade-review-module.md" \
-  "feature,backend,frontend"
+for file in "${files[@]}"; do
+  create_issue "$file"
+done
 
 echo ""
-echo "Done! All issues created."
+echo "Done!"
