@@ -18,31 +18,40 @@ Show the trader which setups to prefer and which to avoid, dynamically switching
 ## Guidance Content by Bias
 
 ### Bullish Bias
+
 **Preferred setups:**
+
 - Pullbacks to VWAP
 - Opening range breakout to upside
 - Higher low continuation patterns
 
 **Trades to avoid:**
+
 - Counter-trend shorts
 
 ### Bearish Bias
+
 **Preferred setups:**
+
 - Rally into resistance
 - VWAP rejection
 - Lower high continuation
 - Breakdown continuation
 
 **Trades to avoid:**
+
 - Counter-trend longs
 
 ### Neutral Bias
+
 **Expected behavior:**
+
 - Range trading
 - Liquidity sweeps
 - False breakouts
 
 **Recommended adjustments:**
+
 - Smaller position size
 - Faster exits
 - Reduced trade frequency

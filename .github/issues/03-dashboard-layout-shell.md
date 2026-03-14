@@ -23,12 +23,12 @@ Create the visual framework matching the spec's layered architecture (Macro → 
 
 ## Routes
 
-| Route | Purpose |
-|---|---|
-| `/` | Landing/redirect to dashboard |
-| `/dashboard` | Main dashboard view |
+| Route               | Purpose                       |
+| ------------------- | ----------------------------- |
+| `/`                 | Landing/redirect to dashboard |
+| `/dashboard`        | Main dashboard view           |
 | `/dashboard/review` | Post-trade review (Ticket 11) |
-| `/dashboard/trades` | Trade log (Tickets 9/10) |
+| `/dashboard/trades` | Trade log (Tickets 9/10)      |
 
 ## Dependencies
 

@@ -11,9 +11,11 @@ Allow the trader to record structured session reviews per the spec's required fi
 ## Technical Requirements
 
 ### Backend
+
 - [ ] API endpoints for CRUD on PostTradeReview
 
 ### Frontend
+
 - [ ] Review form page at `/dashboard/review` with:
   - Day type selector (Trend Up, Trend Down, Range, Grind)
   - "Did macro signals align with price?" (yes/no toggle)

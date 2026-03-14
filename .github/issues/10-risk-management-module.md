@@ -11,12 +11,14 @@ Enforce the spec's risk rules -- max 2 A-quality trades/day, defined risk per tr
 ## Technical Requirements
 
 ### Backend
+
 - [ ] Risk management configuration (stored in DB or env):
   - Max trades per day (default: 2)
   - Max risk per trade (configurable dollar/percentage amount)
   - Max daily loss threshold
 
 ### Frontend
+
 - [ ] Risk Management panel showing:
   - Trades taken today: X / 2
   - Daily P&L running total
@@ -39,6 +41,7 @@ Enforce the spec's risk rules -- max 2 A-quality trades/day, defined risk per tr
 ## Stop Placement Rules (from spec)
 
 Stops must be placed:
+
 - Beyond liquidity level
 - Beyond structural high/low
 - Outside of noise range

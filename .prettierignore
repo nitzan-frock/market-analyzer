@@ -1,0 +1,12 @@
+# Package
+package-lock.json
+node_modules
+
+# Build
+build
+.svelte-kit
+dist
+
+# Generated
+.env
+.env.*

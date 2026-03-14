@@ -11,86 +11,92 @@ Create a complete, normalized database schema that supports macro indicators, ov
 ## Data Models
 
 ### DailySession
+
 Top-level entity for a trading day.
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | String (cuid) | Primary key |
-| `date` | DateTime | Unique, one session per day |
-| `riskScore` | Int? | 0–5, nullable until macro data entered |
-| `dailyBias` | Bias? | Enum: BULLISH, BEARISH, NEUTRAL |
-| `confidenceLevel` | String? | HIGH, MEDIUM, LOW |
-| `createdAt` | DateTime | Auto |
-| `updatedAt` | DateTime | Auto |
+| Field             | Type          | Notes                                  |
+| ----------------- | ------------- | -------------------------------------- |
+| `id`              | String (cuid) | Primary key                            |
+| `date`            | DateTime      | Unique, one session per day            |
+| `riskScore`       | Int?          | 0–5, nullable until macro data entered |
+| `dailyBias`       | Bias?         | Enum: BULLISH, BEARISH, NEUTRAL        |
+| `confidenceLevel` | String?       | HIGH, MEDIUM, LOW                      |
+| `createdAt`       | DateTime      | Auto                                   |
+| `updatedAt`       | DateTime      | Auto                                   |
 
 ### MacroIndicator
+
 Snapshot of a macro indicator for a session.
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | String (cuid) | Primary key |
-| `sessionId` | String | FK → DailySession |
-| `indicator` | MacroIndicatorType | Enum |
-| `value` | Float | Current value |
-| `previousValue` | Float | Previous session value |
-| `isRiskOff` | Boolean | true if rising (risk-off signal) |
-| `timestamp` | DateTime | When recorded |
+| Field           | Type               | Notes                            |
+| --------------- | ------------------ | -------------------------------- |
+| `id`            | String (cuid)      | Primary key                      |
+| `sessionId`     | String             | FK → DailySession                |
+| `indicator`     | MacroIndicatorType | Enum                             |
+| `value`         | Float              | Current value                    |
+| `previousValue` | Float              | Previous session value           |
+| `isRiskOff`     | Boolean            | true if rising (risk-off signal) |
+| `timestamp`     | DateTime           | When recorded                    |
 
 ### OvernightStructure
+
 Pre-market structure data.
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | String (cuid) | Primary key |
-| `sessionId` | String | FK → DailySession (unique, 1:1) |
-| `esTrend` | String | UP, DOWN, FLAT |
-| `nqTrend` | String | UP, DOWN, FLAT |
-| `preMarketVwap` | Float? | |
-| `overnightHigh` | Float? | PMH |
-| `overnightLow` | Float? | PML |
-| `keyLevels` | Json? | Array of price levels |
-| `majorNews` | String? | Text |
-| `scheduledReports` | String? | Text |
+| Field              | Type          | Notes                           |
+| ------------------ | ------------- | ------------------------------- |
+| `id`               | String (cuid) | Primary key                     |
+| `sessionId`        | String        | FK → DailySession (unique, 1:1) |
+| `esTrend`          | String        | UP, DOWN, FLAT                  |
+| `nqTrend`          | String        | UP, DOWN, FLAT                  |
+| `preMarketVwap`    | Float?        |                                 |
+| `overnightHigh`    | Float?        | PMH                             |
+| `overnightLow`     | Float?        | PML                             |
+| `keyLevels`        | Json?         | Array of price levels           |
+| `majorNews`        | String?       | Text                            |
+| `scheduledReports` | String?       | Text                            |
 
 ### IntradaySignal
+
 Confirmation signals observed during the session.
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | String (cuid) | Primary key |
-| `sessionId` | String | FK → DailySession |
-| `signalType` | SignalType | Enum |
-| `description` | String? | Optional notes |
-| `timestamp` | DateTime | When observed |
+| Field         | Type          | Notes             |
+| ------------- | ------------- | ----------------- |
+| `id`          | String (cuid) | Primary key       |
+| `sessionId`   | String        | FK → DailySession |
+| `signalType`  | SignalType    | Enum              |
+| `description` | String?       | Optional notes    |
+| `timestamp`   | DateTime      | When observed     |
 
 ### Trade
+
 Individual trade log entry.
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | String (cuid) | Primary key |
-| `sessionId` | String | FK → DailySession |
-| `direction` | TradeDirection | Enum: LONG, SHORT |
-| `entryPrice` | Float | |
-| `exitPrice` | Float? | Nullable until trade closed |
-| `stopPrice` | Float | |
-| `isAlignedWithBias` | Boolean | |
-| `qualificationScore` | Int | 0–5 |
-| `notes` | String? | |
-| `timestamp` | DateTime | |
+| Field                | Type           | Notes                       |
+| -------------------- | -------------- | --------------------------- |
+| `id`                 | String (cuid)  | Primary key                 |
+| `sessionId`          | String         | FK → DailySession           |
+| `direction`          | TradeDirection | Enum: LONG, SHORT           |
+| `entryPrice`         | Float          |                             |
+| `exitPrice`          | Float?         | Nullable until trade closed |
+| `stopPrice`          | Float          |                             |
+| `isAlignedWithBias`  | Boolean        |                             |
+| `qualificationScore` | Int            | 0–5                         |
+| `notes`              | String?        |                             |
+| `timestamp`          | DateTime       |                             |
 
 ### PostTradeReview
+
 End-of-day review.
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | String (cuid) | Primary key |
-| `sessionId` | String | FK → DailySession (unique, 1:1) |
-| `dayType` | DayType | Enum: TREND_UP, TREND_DOWN, RANGE, GRIND |
-| `macroAligned` | Boolean | |
-| `tradesFollowedBias` | Boolean | |
-| `effectiveSignals` | String? | Text |
-| `mistakes` | String? | Text |
+| Field                | Type          | Notes                                    |
+| -------------------- | ------------- | ---------------------------------------- |
+| `id`                 | String (cuid) | Primary key                              |
+| `sessionId`          | String        | FK → DailySession (unique, 1:1)          |
+| `dayType`            | DayType       | Enum: TREND_UP, TREND_DOWN, RANGE, GRIND |
+| `macroAligned`       | Boolean       |                                          |
+| `tradesFollowedBias` | Boolean       |                                          |
+| `effectiveSignals`   | String?       | Text                                     |
+| `mistakes`           | String?       | Text                                     |
 
 ## Enums
 
@@ -106,9 +112,9 @@ TradeDirection: LONG, SHORT
 
 ```typescript
 interface RiskScoreResult {
-  score: number; // 0-5
-  signals: { indicator: MacroIndicatorType; isRiskOff: boolean }[];
-  interpretation: 'RISK_ON' | 'NEUTRAL' | 'RISK_OFF';
+	score: number; // 0-5
+	signals: { indicator: MacroIndicatorType; isRiskOff: boolean }[];
+	interpretation: 'RISK_ON' | 'NEUTRAL' | 'RISK_OFF';
 }
 ```
 

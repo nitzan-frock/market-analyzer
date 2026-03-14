@@ -11,6 +11,7 @@ Automatically compute and display daily bias (Bullish / Bearish / Neutral) with 
 ## Technical Requirements
 
 ### Backend
+
 - [ ] Bias calculation service in `$lib/server/bias.ts`
   - Inputs: risk score (from #4), overnight trend strength (from #5)
   - Logic per spec (see below)
@@ -19,6 +20,7 @@ Automatically compute and display daily bias (Bullish / Bearish / Neutral) with 
 - [ ] Auto-recalculates when macro or overnight data changes
 
 ### Frontend
+
 - [ ] Prominent bias display at top of Decision Layer panel
   - Large bias label (color-coded: green/red/yellow)
   - Confidence badge (High / Medium / Low)
@@ -35,10 +37,10 @@ If Risk Score = 2 or 3 → Neutral / Range Expectation
 
 ```typescript
 interface BiasResult {
-  bias: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
-  confidence: 'HIGH' | 'MEDIUM' | 'LOW';
-  riskScore: number;
-  overnightTrend: string;
+	bias: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+	confidence: 'HIGH' | 'MEDIUM' | 'LOW';
+	riskScore: number;
+	overnightTrend: string;
 }
 ```
 
