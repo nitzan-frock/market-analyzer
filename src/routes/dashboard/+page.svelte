@@ -1,19 +1,12 @@
 <script lang="ts">
 	import DashboardPanel from '$lib/components/DashboardPanel.svelte';
+	import MacroPanel from '$lib/components/MacroPanel.svelte';
+
+	let { data } = $props();
 </script>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-	<DashboardPanel title="Macro Layer">
-		<div class="space-y-2">
-			<p class="text-sm text-base-content/50">
-				Bond yields, VIX, Dollar index, Oil, Credit spreads
-			</p>
-			<div class="flex items-center gap-2">
-				<div class="badge badge-outline">Risk Score: --</div>
-				<div class="badge badge-ghost">Bias: --</div>
-			</div>
-		</div>
-	</DashboardPanel>
+	<MacroPanel sessionId={data.session.id} indicators={data.session.macroIndicators} />
 
 	<DashboardPanel title="Market Structure Layer">
 		<div class="space-y-2">
@@ -41,11 +34,19 @@
 		<div class="space-y-3">
 			<div class="flex items-center gap-3">
 				<span class="text-sm font-medium">Daily Bias</span>
-				<div class="badge badge-lg badge-ghost">Not Set</div>
+				{#if data.session.dailyBias}
+					<div class="badge badge-lg">{data.session.dailyBias}</div>
+				{:else}
+					<div class="badge badge-lg badge-ghost">Not Set</div>
+				{/if}
 			</div>
 			<div class="flex items-center gap-3">
 				<span class="text-sm font-medium">Confidence</span>
-				<div class="badge badge-sm badge-ghost">--</div>
+				{#if data.session.confidenceLevel}
+					<div class="badge badge-sm">{data.session.confidenceLevel}</div>
+				{:else}
+					<div class="badge badge-sm badge-ghost">--</div>
+				{/if}
 			</div>
 			<p class="text-xs text-base-content/30 italic">
 				Macro context + Market structure = Trade setup

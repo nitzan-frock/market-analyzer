@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 
-	let { children } = $props();
+	let { children, data } = $props();
 
-	let selectedDate = $state(new Date().toISOString().split('T')[0]);
+	let selectedDate = $derived(data.selectedDate);
 
 	const navItems = [
 		{ href: '/dashboard', label: 'Dashboard', icon: '◫' },
@@ -14,6 +15,14 @@
 	function isActive(href: string): boolean {
 		if (href === '/dashboard') return page.url.pathname === '/dashboard';
 		return page.url.pathname.startsWith(href);
+	}
+
+	function onDateChange(e: Event) {
+		const target = e.target as HTMLInputElement;
+		selectedDate = target.value;
+		const url = new URL(page.url);
+		url.searchParams.set('date', selectedDate);
+		goto(url.toString(), { invalidateAll: true });
 	}
 </script>
 
@@ -44,7 +53,8 @@
 				id="session-date"
 				type="date"
 				class="input input-sm input-bordered w-full"
-				bind:value={selectedDate}
+				value={selectedDate}
+				onchange={onDateChange}
 			/>
 		</div>
 	</aside>

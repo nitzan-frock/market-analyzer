@@ -1,5 +1,5 @@
-import type { MacroIndicatorType } from '../../../../generated/prisma/client.js';
-import { prisma } from './index.js';
+import type { MacroIndicatorType } from '../../../../generated/prisma/client';
+import { prisma } from './index';
 
 export function getIndicatorsForSession(sessionId: string) {
 	return prisma.macroIndicator.findMany({
