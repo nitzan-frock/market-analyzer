@@ -11,10 +11,12 @@ Allow the trader to log and view intraday confirmation signals that validate or 
 ## Technical Requirements
 
 ### Backend
+
 - [ ] API endpoint `POST /api/session/[id]/signals` to log signals
 - [ ] API endpoint `GET /api/session/[id]/signals` to retrieve signals
 
 ### Frontend
+
 - [ ] Signal log panel with:
   - Quick-add buttons for each signal type (VWAP interaction, liquidity sweep, volume expansion, break of structure, ORB)
   - Timestamp auto-populated on creation

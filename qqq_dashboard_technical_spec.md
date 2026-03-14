@@ -1,5 +1,5 @@
-
 # QQQ Market Context Dashboard
+
 ## Technical Specification
 
 ---
@@ -82,7 +82,6 @@ The dashboard consists of four primary layers:
 
 Data flows through these layers to create contextual awareness for trade decisions.
 
-
 ---
 
 # 6. Functional Requirements
@@ -93,13 +92,13 @@ The macro context module aggregates indicators reflecting financial conditions a
 
 ### Indicators
 
-| Indicator | Description |
-|---|---|
-10Y Treasury Yield | Measures interest rate pressure on equity valuations |
-VIX | Measures expected volatility in equity markets |
-DXY (Dollar Index) | Proxy for global liquidity conditions |
-Oil Prices | Proxy for inflation expectations |
-Credit Spreads | Measure of corporate credit risk |
+| Indicator          | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| 10Y Treasury Yield | Measures interest rate pressure on equity valuations |
+| VIX                | Measures expected volatility in equity markets       |
+| DXY (Dollar Index) | Proxy for global liquidity conditions                |
+| Oil Prices         | Proxy for inflation expectations                     |
+| Credit Spreads     | Measure of corporate credit risk                     |
 
 ### Risk Score Calculation
 
@@ -122,11 +121,10 @@ Risk Score = Sum(risk-off signals)
 ### Bias Interpretation
 
 | Risk Score | Market Interpretation |
-|---|---|
-0-1 | Risk-On |
-2-3 | Neutral |
-4-5 | Risk-Off |
-
+| ---------- | --------------------- |
+| 0-1        | Risk-On               |
+| 2-3        | Neutral               |
+| 4-5        | Risk-Off              |
 
 ---
 
@@ -154,7 +152,6 @@ PML
 Key Levels
 Pre-Market VWAP
 ```
-
 
 ---
 
@@ -185,7 +182,6 @@ Example:
 Daily Bias: Bearish
 Confidence: Medium
 ```
-
 
 ---
 
@@ -232,7 +228,6 @@ Recommended adjustments:
 - Faster exits
 - Reduced trade frequency
 
-
 ---
 
 ## 6.5 Intraday Confirmation Signals
@@ -257,7 +252,6 @@ Bearish Bias
 = Short Entry
 ```
 
-
 ---
 
 ## 6.6 Trade Qualification Module
@@ -273,7 +267,6 @@ Is trade near key level?
 ```
 
 Trade should be avoided if two or more conditions fail.
-
 
 ---
 
@@ -292,7 +285,6 @@ Stops must be placed:
 - Beyond liquidity level
 - Beyond structural high/low
 - Outside of noise range
-
 
 ---
 
@@ -315,7 +307,6 @@ What signals were effective?
 What mistakes occurred?
 ```
 
-
 ---
 
 # 7. Future Enhancements
@@ -329,7 +320,6 @@ Potential future upgrades include:
 - Dealer gamma exposure tracking
 - Liquidity regime classification
 
-
 ---
 
 # 8. Dashboard Vision
@@ -337,6 +327,7 @@ Potential future upgrades include:
 The dashboard organizes market data into a layered decision framework.
 
 ### Macro Layer
+
 - Bond yields
 - VIX
 - Dollar index
@@ -344,12 +335,14 @@ The dashboard organizes market data into a layered decision framework.
 - Credit spreads
 
 ### Market Structure Layer
+
 - Futures trend
 - Overnight high/low
 - VWAP
 - Opening range
 
 ### Execution Layer
+
 - Liquidity sweeps
 - Momentum expansion
 - Volume spikes

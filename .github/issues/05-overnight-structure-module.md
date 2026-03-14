@@ -11,9 +11,11 @@ Display and allow entry of pre-market futures data (ES/NQ trends, VWAP, overnigh
 ## Technical Requirements
 
 ### Backend
+
 - [ ] API endpoint `POST /api/session/[id]/overnight` to save overnight data
 
 ### Frontend
+
 - [ ] Overnight Structure panel component with fields for:
   - ES overnight trend (select: UP / DOWN / FLAT)
   - NQ overnight trend (select: UP / DOWN / FLAT)
