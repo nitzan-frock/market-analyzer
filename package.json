@@ -13,9 +13,15 @@
 		"lint": "eslint .",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
+		"docker:up": "docker compose up -d",
+		"docker:down": "docker compose down",
+		"docker:nuke-test": "docker compose down db-test -v && docker compose up db-test -d",
 		"db:migrate": "prisma migrate dev",
 		"db:seed": "npx tsx prisma/seed.ts",
-		"db:reset": "prisma migrate reset"
+		"db:reset": "prisma migrate reset",
+		"db:test:migrate": "DATABASE_URL=$DATABASE_URL_TEST prisma migrate dev",
+		"db:test:seed": "DATABASE_URL=$DATABASE_URL_TEST npx tsx prisma/seed.ts",
+		"db:test:reset": "DATABASE_URL=$DATABASE_URL_TEST prisma migrate reset"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^20.4.4",
