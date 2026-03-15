@@ -1,6 +1,7 @@
 <script lang="ts">
 	import DashboardPanel from '$lib/components/DashboardPanel.svelte';
 	import MacroPanel from '$lib/components/MacroPanel.svelte';
+	import OvernightPanel from '$lib/components/OvernightPanel.svelte';
 
 	let { data } = $props();
 </script>
@@ -8,18 +9,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 	<MacroPanel sessionId={data.session.id} indicators={data.session.macroIndicators} />
 
-	<DashboardPanel title="Market Structure Layer">
-		<div class="space-y-2">
-			<p class="text-sm text-base-content/50">
-				Futures trend, Overnight high/low, VWAP, Opening range
-			</p>
-			<div class="flex gap-4 text-sm">
-				<span>PMH: <span class="text-base-content/40">--</span></span>
-				<span>PML: <span class="text-base-content/40">--</span></span>
-				<span>VWAP: <span class="text-base-content/40">--</span></span>
-			</div>
-		</div>
-	</DashboardPanel>
+	<OvernightPanel sessionId={data.session.id} overnight={data.session.overnightStructure} />
 
 	<DashboardPanel title="Execution Layer">
 		<div class="space-y-2">
