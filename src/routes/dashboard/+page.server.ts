@@ -1,10 +1,10 @@
 import { fail } from '@sveltejs/kit';
-import { intradaySignalService } from '$lib/server/services/intradaySignal.service';
 import { macroIndicatorService } from '$lib/server/services/macroIndicator.service';
 import { overnightStructureService } from '$lib/server/services/overnightStructure.service';
+import { pullKeyLevels } from '$lib/server/services/keyLevels.service';
 import { sessionService } from '$lib/server/services/session.service';
 import { calculateRiskScore, ALL_INDICATORS } from '$lib/macro';
-import type { MacroIndicatorType, SignalType } from '../../../generated/prisma/client';
+import type { MacroIndicatorType } from '../../../generated/prisma/client';
 import type { Actions } from './$types';
 
 function parseKeyLevels(s: string): number[] {
@@ -91,40 +91,15 @@ export const actions: Actions = {
 		return { success: true };
 	},
 
-	addSignal: async ({ request }) => {
+	refreshKeyLevels: async ({ request }) => {
 		const formData = await request.formData();
 		const sessionId = formData.get('sessionId') as string;
-		const signalType = formData.get('signalType') as SignalType;
-		const description = (formData.get('description') as string)?.trim() || undefined;
+		const dateStr = (formData.get('date') as string)?.trim();
 
-		if (!sessionId || !signalType) {
-			return fail(400, { error: 'Missing session ID or signal type' });
+		if (!sessionId || !dateStr) {
+			return fail(400, { error: 'Missing session ID or date' });
 		}
-
-		const validTypes: SignalType[] = [
-			'VWAP_INTERACTION',
-			'LIQUIDITY_SWEEP',
-			'VOLUME_EXPANSION',
-			'BREAK_OF_STRUCTURE',
-			'ORB'
-		];
-		if (!validTypes.includes(signalType)) {
-			return fail(400, { error: 'Invalid signal type' });
-		}
-
-		await intradaySignalService.create(sessionId, { signalType, description });
-		return { success: true };
-	},
-
-	deleteSignal: async ({ request }) => {
-		const formData = await request.formData();
-		const signalId = formData.get('signalId') as string;
-
-		if (!signalId) {
-			return fail(400, { error: 'Missing signal ID' });
-		}
-
-		await intradaySignalService.delete(signalId);
+		await pullKeyLevels(sessionId, dateStr);
 		return { success: true };
 	}
 };

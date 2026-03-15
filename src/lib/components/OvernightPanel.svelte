@@ -6,9 +6,11 @@
 
 	let {
 		sessionId,
+		selectedDate,
 		overnight
 	}: {
 		sessionId: string;
+		selectedDate: string;
 		overnight: OvernightStructure | null;
 	} = $props();
 
@@ -69,9 +71,13 @@
 							<span>ES: <span class="font-mono font-medium">{overnight.esTrend}</span></span>
 							<span>NQ: <span class="font-mono font-medium">{overnight.nqTrend}</span></span>
 						</div>
+						<div class="text-base-content/50 text-xs uppercase tracking-wider mt-1">Key levels (body H/L)</div>
+						<div class="flex flex-wrap gap-x-4 gap-y-1 text-base-content/70">
+							<span>Prev day: <span class="font-mono">{overnight.previousDayHigh?.toFixed(2) ?? '--'}</span> / <span class="font-mono">{overnight.previousDayLow?.toFixed(2) ?? '--'}</span></span>
+							<span>Overnight (PMH/PML): <span class="font-mono">{overnight.overnightHigh?.toFixed(2) ?? '--'}</span> / <span class="font-mono">{overnight.overnightLow?.toFixed(2) ?? '--'}</span></span>
+							<span>Premarket: <span class="font-mono">{overnight.premarketHigh?.toFixed(2) ?? '--'}</span> / <span class="font-mono">{overnight.premarketLow?.toFixed(2) ?? '--'}</span></span>
+						</div>
 						<div class="flex gap-4 text-base-content/70">
-							<span>PMH: <span class="font-mono">{overnight.overnightHigh?.toFixed(2) ?? '--'}</span></span>
-							<span>PML: <span class="font-mono">{overnight.overnightLow?.toFixed(2) ?? '--'}</span></span>
 							<span>VWAP: <span class="font-mono">{overnight.preMarketVwap?.toFixed(2) ?? '--'}</span></span>
 						</div>
 						{#if Array.isArray(overnight.keyLevels) && (overnight.keyLevels as number[]).length > 0}
@@ -97,9 +103,18 @@
 					<p class="text-sm text-base-content/40 italic">No overnight structure entered for this session</p>
 				{/if}
 
-				<button class="btn btn-outline btn-sm mt-3" onclick={() => (editing = true)}>
-					{overnight ? 'Edit Structure' : 'Enter Structure'}
-				</button>
+				<div class="flex flex-wrap gap-2 mt-3">
+					<button class="btn btn-outline btn-sm" onclick={() => (editing = true)}>
+						{overnight ? 'Edit Structure' : 'Enter Structure'}
+					</button>
+					<form method="POST" action="?/refreshKeyLevels" use:enhance>
+						<input type="hidden" name="sessionId" value={sessionId} />
+						<input type="hidden" name="date" value={selectedDate} />
+						<button type="submit" class="btn btn-ghost btn-sm">
+							Refresh key levels
+						</button>
+					</form>
+				</div>
 			{:else}
 				<form
 					method="POST"

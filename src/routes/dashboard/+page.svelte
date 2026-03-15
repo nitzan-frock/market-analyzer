@@ -1,6 +1,5 @@
 <script lang="ts">
 	import DashboardPanel from '$lib/components/DashboardPanel.svelte';
-	import IntradaySignalsPanel from '$lib/components/IntradaySignalsPanel.svelte';
 	import MacroPanel from '$lib/components/MacroPanel.svelte';
 	import OvernightPanel from '$lib/components/OvernightPanel.svelte';
 
@@ -10,9 +9,11 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 	<MacroPanel sessionId={data.session.id} indicators={data.session.macroIndicators} />
 
-	<OvernightPanel sessionId={data.session.id} overnight={data.session.overnightStructure} />
-
-	<IntradaySignalsPanel sessionId={data.session.id} signals={data.session.intradaySignals} />
+	<OvernightPanel
+		sessionId={data.session.id}
+		selectedDate={data.selectedDate}
+		overnight={data.session.overnightStructure}
+	/>
 
 	<DashboardPanel title="Decision Layer">
 		<div class="space-y-3">

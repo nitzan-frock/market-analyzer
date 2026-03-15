@@ -76,16 +76,20 @@ model MacroIndicator {
 }
 
 model OvernightStructure {
-  id               String  @id @default(cuid())
-  sessionId        String  @unique
-  esTrend          String
-  nqTrend          String
-  preMarketVwap    Float?
-  overnightHigh    Float?
-  overnightLow     Float?
-  keyLevels        Json?
-  majorNews        String?
-  scheduledReports String?
+  id                String  @id @default(cuid())
+  sessionId         String  @unique
+  esTrend           String
+  nqTrend           String
+  preMarketVwap     Float?
+  previousDayHigh   Float?
+  previousDayLow    Float?
+  overnightHigh     Float?
+  overnightLow      Float?
+  premarketHigh     Float?
+  premarketLow      Float?
+  keyLevels         Json?
+  majorNews         String?
+  scheduledReports  String?
 
   session DailySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 }

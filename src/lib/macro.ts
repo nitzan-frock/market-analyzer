@@ -1,4 +1,4 @@
-import type { MacroIndicatorType } from '../../generated/prisma/client';
+import type { Bias, MacroIndicatorType } from '../../generated/prisma/client';
 
 export interface RiskScoreResult {
 	score: number;
@@ -54,3 +54,62 @@ export const ALL_INDICATORS: MacroIndicatorType[] = [
 	'OIL',
 	'CREDIT_SPREADS'
 ];
+
+// ── Daily Bias Engine (spec 6.3) ───────────────────────────────────────
+
+const STRONG_TRENDS = ['UP'] as const;
+const WEAK_TRENDS = ['DOWN', 'FLAT', 'MIXED'] as const;
+
+function isStrongTrend(trend: string): boolean {
+	return STRONG_TRENDS.includes(trend?.trim().toUpperCase() as (typeof STRONG_TRENDS)[number]);
+}
+
+function isWeakTrend(trend: string): boolean {
+	return WEAK_TRENDS.includes(trend?.trim().toUpperCase() as (typeof WEAK_TRENDS)[number]);
+}
+
+export interface DailyBiasResult {
+	bias: Bias;
+	confidenceLevel: 'High' | 'Medium' | 'Low';
+}
+
+/**
+ * Combines macro risk score with overnight futures trend to produce daily bias.
+ * Risk Score >= 4 + weak futures → Bearish
+ * Risk Score <= 1 + strong futures → Bullish
+ * Otherwise → Neutral
+ */
+export function calculateDailyBias(
+	riskScore: number,
+	esTrend: string,
+	nqTrend: string
+): DailyBiasResult | null {
+	const esStrong = isStrongTrend(esTrend);
+	const nqStrong = isStrongTrend(nqTrend);
+	const esWeak = isWeakTrend(esTrend);
+	const nqWeak = isWeakTrend(nqTrend);
+	const futuresStrong = esStrong && nqStrong;
+	const futuresWeak = esWeak || nqWeak;
+
+	let bias: Bias;
+	let confidenceLevel: DailyBiasResult['confidenceLevel'];
+
+	if (riskScore >= 4 && futuresWeak) {
+		bias = 'BEARISH';
+		confidenceLevel = esWeak && nqWeak ? 'High' : 'Medium';
+	} else if (riskScore <= 1 && futuresStrong) {
+		bias = 'BULLISH';
+		confidenceLevel = 'High';
+	} else if (riskScore <= 1 && !futuresStrong) {
+		bias = 'BULLISH';
+		confidenceLevel = 'Low';
+	} else if (riskScore >= 4 && !futuresWeak) {
+		bias = 'BEARISH';
+		confidenceLevel = 'Low';
+	} else {
+		bias = 'NEUTRAL';
+		confidenceLevel = riskScore === 2 || riskScore === 3 ? 'Medium' : 'Low';
+	}
+
+	return { bias, confidenceLevel };
+}
