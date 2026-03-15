@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DashboardPanel from '$lib/components/DashboardPanel.svelte';
+	import IntradaySignalsPanel from '$lib/components/IntradaySignalsPanel.svelte';
 	import MacroPanel from '$lib/components/MacroPanel.svelte';
 	import OvernightPanel from '$lib/components/OvernightPanel.svelte';
 
@@ -11,14 +12,7 @@
 
 	<OvernightPanel sessionId={data.session.id} overnight={data.session.overnightStructure} />
 
-	<DashboardPanel title="Execution Layer">
-		<div class="space-y-2">
-			<p class="text-sm text-base-content/50">
-				Liquidity sweeps, Momentum expansion, Volume spikes, Break of structure
-			</p>
-			<p class="text-xs text-base-content/30 italic">Signals will appear here during the session</p>
-		</div>
-	</DashboardPanel>
+	<IntradaySignalsPanel sessionId={data.session.id} signals={data.session.intradaySignals} />
 
 	<DashboardPanel title="Decision Layer">
 		<div class="space-y-3">

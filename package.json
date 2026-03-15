@@ -23,9 +23,9 @@
 		"db:migrate": "prisma migrate dev",
 		"db:seed": "npx tsx prisma/seed.ts",
 		"db:reset": "prisma migrate reset",
-		"db:test:migrate": "DATABASE_URL=$DATABASE_URL_TEST prisma migrate dev",
-		"db:test:seed": "DATABASE_URL=$DATABASE_URL_TEST npx tsx prisma/seed.ts",
-		"db:test:reset": "DATABASE_URL=$DATABASE_URL_TEST prisma migrate reset"
+		"db:test:migrate": "npx tsx scripts/db-test-run.ts prisma migrate dev",
+		"db:test:seed": "npx tsx prisma/seed.ts --test",
+		"db:test:reset": "npx tsx scripts/db-test-run.ts prisma migrate reset"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^20.4.4",

@@ -2,7 +2,18 @@ import 'dotenv/config';
 import { PrismaClient } from '../generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const useTestDb = process.argv.includes('--test');
+const connectionString = useTestDb
+	? process.env.DATABASE_URL_TEST
+	: process.env.DATABASE_URL;
+if (!connectionString || typeof connectionString !== 'string') {
+	throw new Error(
+		`${
+			useTestDb ? 'DATABASE_URL_TEST' : 'DATABASE_URL'
+		} must be set in .env`
+	);
+}
+const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
